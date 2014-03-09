@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 formatted_date = datetime.datetime.now().strftime('%m_%d_%Y')
-handler = logging.FileHandler("luna-" + formatted_date + ".log")
+handler = logging.FileHandler("logs/luna-" + formatted_date + ".log")
 handler.setLevel(logging.DEBUG)
 
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -53,14 +53,14 @@ while True:
 		conn.request("POST", "/functions.php", body, headers)
 		res = conn.getresponse();
 		data = res.read();
-		logger.debug(res.status)
-		logger.debug(res.reason)
+		logger.debug("%s - %s", res.status, res.reason)
 		logger.debug(data)
 		conn.close()
 		randsleep = random.randint(30, 120)
-		logger.info("Waiting for " + str(randsleep) + "before voting on next site.")
+		logger.info("Waiting for " + str(randsleep) + " seconds before voting on next site.")
 		time.sleep(randsleep)
 	randint = random.randint(minWait, maxWait)
+	waketime =  (datetime.datetime.now() + datetime.timedelta(0, randint)).strftime('%I:%M:%S%p')
 	logger.info("Sleeping")
-	logger.debug("Sleep time" + str(randint))
+	logger.debug("Waiting until " + waketime + " (" + str(randint) + " seconds) before voting again.")
 	time.sleep(randint)
